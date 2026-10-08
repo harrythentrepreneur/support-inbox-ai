@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<script>document.documentElement.classList.add("js")</script>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Inbox AI · open-source help desk with AI reply drafts and issue extraction</title>
+<meta name="description" content="An open-source help desk for small software teams. Every support email gets an AI reply draft, and real bugs become developer-ready issue cards you can push to GitHub.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://harrythentrepreneur.github.io/support-inbox-ai/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Support Inbox AI">
+<meta property="og:description" content="Support email in. Reply drafts and fixable issues out. Open-source help desk for small software teams.">
+<meta property="og:url" content="https://harrythentrepreneur.github.io/support-inbox-ai/">
+<meta property="og:image" content="https://harrythentrepreneur.github.io/support-inbox-ai/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://harrythentrepreneur.github.io/support-inbox-ai/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111827'/%3E%3Cg fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' transform='translate(5 5) scale(.92)'%3E%3Cpolyline points='22 12 16 12 14 15 10 15 8 12 2 12'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Inter"; src: url("fonts/Inter-latin.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+:root {
+  --ink: #111827; --ink-2: #4b5563; --ink-3: #6b7280; --ink-4: #9ca3af;
+  --line: #e5e7eb; --line-2: #f0f0f0; --bg: #ffffff; --bg-2: #f9fafb; --bg-3: #f3f4f6;
+  --accent: #2563eb; --accent-hover: #1d4ed8; --accent-light: #eff6ff; --accent-subtle: #dbeafe;
+  --amber: #b45309; --amber-bg: #fffbeb; --amber-line: #fde68a;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(17,24,39,.05), 0 18px 40px -16px rgba(17,24,39,.22), 0 0 0 1px rgba(17,24,39,.07);
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: var(--ink); background: var(--bg); -webkit-font-smoothing: antialiased; line-height: 1.55; font-feature-settings: "cv11", "ss01"; }
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+::selection { background: var(--accent-subtle); }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* nav */
+.nav { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,.82); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid transparent; transition: border-color .2s; }
+.nav.scrolled { border-bottom-color: var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 62px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 650; letter-spacing: -0.02em; font-size: 15.5px; }
+.brand span { color: var(--accent); }
+.mark { width: 30px; height: 30px; border-radius: 8px; background: var(--ink); display: grid; place-items: center; position: relative; flex: none; }
+.mark svg { width: 17px; height: 17px; }
+.mark i { position: absolute; right: -4px; top: -4px; width: 13px; height: 13px; border-radius: 4px; background: var(--accent); box-shadow: 0 0 0 2px #fff; display: grid; place-items: center; }
+.mark i svg { width: 8px; height: 8px; }
+.nav nav { display: flex; align-items: center; gap: 4px; }
+.nav nav a { text-decoration: none; font-size: 13.5px; font-weight: 550; color: var(--ink-2); padding: 7px 11px; border-radius: 8px; transition: background .15s, color .15s; }
+.nav nav a:hover { background: var(--bg-3); color: var(--ink); }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; text-decoration: none; border-radius: 10px; padding: 11px 16px; transition: background .15s, transform .15s var(--ease), box-shadow .15s; }
+.btn svg { width: 16px; height: 16px; }
+.btn.dark { background: var(--ink); color: #fff; }
+.btn.dark:hover { background: #1f2937; transform: translateY(-1px); }
+.btn.ghost { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.btn.ghost:hover { background: var(--bg-2); }
+.nav .btn { padding: 8px 12px; font-size: 13px; }
+.btn:focus-visible, .nav nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* hero */
+.hero { position: relative; padding: 72px 0 40px; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; z-index: -1;
+  background-image: linear-gradient(rgba(17,24,39,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(17,24,39,.04) 1px, transparent 1px);
+  background-size: 32px 32px; mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 40%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 40%, transparent 100%); }
+.hero::after { content: ""; position: absolute; z-index: -1; width: 900px; height: 500px; left: 50%; top: -220px; transform: translateX(-50%); background: radial-gradient(closest-side, rgba(37,99,235,.13), transparent); }
+.eyebrow { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-light); border: 1px solid var(--accent-subtle); padding: 5px 11px; border-radius: 999px; text-decoration: none; }
+.eyebrow svg { width: 13px; height: 13px; }
+.hero h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.04; letter-spacing: -0.045em; font-weight: 750; margin: 22px auto 18px; max-width: 900px; text-wrap: balance; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lede { font-size: clamp(17px, 2vw, 19.5px); color: var(--ink-2); max-width: 640px; margin: 0 auto; text-wrap: pretty; }
+.hero .center { text-align: center; }
+.cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+.meta { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; margin-top: 22px; font-size: 13px; color: var(--ink-3); }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta svg { width: 14px; height: 14px; color: var(--ink-4); }
+
+/* browser frame */
+.frame { border-radius: var(--radius); background: #fff; box-shadow: var(--shadow); overflow: hidden; }
+.frame .bar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: var(--bg-2); border-bottom: 1px solid var(--line); }
+.frame .bar i { width: 10px; height: 10px; border-radius: 50%; background: #e5e7eb; }
+.frame .bar .url { margin: 0 auto; font-size: 12px; color: var(--ink-3); background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 2px 40px; transform: translateX(-24px); }
+.stage { margin-top: 52px; perspective: 1600px; }
+.js .stage .frame { transform: rotateX(10deg) scale(.96); transform-origin: 50% 0; transition: transform 1s var(--ease); }
+.js .stage.in .frame { transform: none; }
+.caption { text-align: center; font-size: 13px; color: var(--ink-3); margin-top: 14px; }
+
+/* sections */
+section { padding: 88px 0; }
+.kicker { font-size: 12.5px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h2 { font-size: clamp(28px, 3.6vw, 40px); letter-spacing: -0.035em; line-height: 1.12; font-weight: 720; margin: 10px 0 14px; text-wrap: balance; }
+.sub { color: var(--ink-2); font-size: 17px; max-width: 620px; text-wrap: pretty; }
+
+.split { display: grid; grid-template-columns: 1fr 1.25fr; gap: 56px; align-items: center; }
+.split.rev { grid-template-columns: 1.25fr 1fr; }
+.split.rev .copy { order: 2; }
+.points { list-style: none; margin-top: 22px; display: grid; gap: 12px; }
+.points li { display: flex; gap: 12px; font-size: 15px; color: var(--ink-2); }
+.points li b { color: var(--ink); font-weight: 600; }
+.points .dot { flex: none; width: 22px; height: 22px; border-radius: 6px; background: var(--accent-light); border: 1px solid var(--accent-subtle); display: grid; place-items: center; margin-top: 1px; }
+.points .dot svg { width: 12px; height: 12px; color: var(--accent); }
+.points.amber .dot { background: var(--amber-bg); border-color: var(--amber-line); }
+.points.amber .dot svg { color: var(--amber); }
+
+.tilt { transition: transform .5s var(--ease), box-shadow .5s var(--ease); will-change: transform; }
+
+.alt { background: var(--bg-2); border-top: 1px solid var(--line-2); border-bottom: 1px solid var(--line-2); }
+.cards { display: grid; grid-template-columns: 0.9fr 1.6fr; gap: 28px; align-items: start; margin-top: 40px; }
+.cardshot { border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); background: #fff; }
+
+.how { margin-top: 36px; }
+.how img { border-radius: 22px; }
+
+/* quick start */
+.qs { display: grid; grid-template-columns: 1fr 1.2fr; gap: 48px; align-items: start; }
+pre { background: #0b1020; color: #e5e7eb; border-radius: 14px; padding: 46px 22px 20px; font: 13.5px/1.75 ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; overflow-x: auto; position: relative; box-shadow: 0 18px 40px -20px rgba(17,24,39,.5); }
+pre .c { color: #6b7280; }
+pre .p { color: #93c5fd; user-select: none; }
+.copy-btn { position: absolute; top: 10px; right: 10px; font: 600 12px Inter, sans-serif; color: #d1d5db; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); border-radius: 7px; padding: 5px 9px; cursor: pointer; transition: background .15s; }
+.copy-btn:hover { background: rgba(255,255,255,.16); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 18px; }
+td { padding: 9px 0; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-2); }
+td:first-child { width: 46%; padding-right: 14px; }
+code { font: 12.5px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: var(--bg-3); border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; color: var(--ink); }
+
+.status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 30px; }
+.status div { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px; font-size: 14.5px; color: var(--ink-2); }
+.status b { display: block; color: var(--ink); font-size: 15px; margin-bottom: 4px; }
+
+.final { text-align: center; padding: 96px 0 104px; }
+footer { border-top: 1px solid var(--line); padding: 28px 0 36px; font-size: 13px; color: var(--ink-3); }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer a { color: var(--ink-2); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+
+/* reveal */
+.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.js .reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .split, .split.rev, .qs, .cards { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .qs > *, .split > *, .cards > * { min-width: 0; }
+  td code { word-break: break-word; }
+  .frame .bar .url { display: none; }
+  pre { white-space: pre-wrap; word-break: break-word; font-size: 12.5px; }
+  pre .c { display: block; padding-left: 1.2em; }
+  .split.rev .copy { order: 0; }
+  .status { grid-template-columns: 1fr; }
+  .nav nav a.hide-m { display: none; }
+  section { padding: 64px 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal, .stage .frame, .tilt { transition: none !important; transform: none !important; opacity: 1 !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Support Inbox AI home">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        <i><svg viewBox="0 0 24 24" fill="#fff"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg></i>
+      </span>
+      Support Inbox <span>AI</span>
+    </a>
+    <nav aria-label="Main">
+      <a class="hide-m" href="#drafts">Drafts</a>
+      <a class="hide-m" href="#issues">Issues</a>
+      <a class="hide-m" href="#how">How it works</a>
+      <a class="hide-m" href="#start">Quick start</a>
+      <a class="btn dark" href="https://github.com/harrythentrepreneur/support-inbox-ai">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.7 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap center">
+      <a class="eyebrow" href="https://github.com/harrythentrepreneur/support-inbox-ai">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/></svg>
+        Open source · MIT
+      </a>
+      <h1>Every support email becomes a <em>reply draft</em> and a <em>ready-to-fix issue</em>.</h1>
+      <p class="lede">A small, self-hosted help desk for software teams. Connect your mailboxes, answer customers with AI drafts you edit, and turn real bugs into issue cards with a fix prompt your coding agent can act on.</p>
+      <div class="cta">
+        <a class="btn dark" href="#start">Run it locally
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="btn ghost" href="https://github.com/harrythentrepreneur/support-inbox-ai">View the code</a>
+      </div>
+      <div class="meta">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Next.js 16 + Postgres</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Your own OpenAI key</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>One-click GitHub issues</span>
+      </div>
+    </div>
+    <div class="wrap stage" id="stage">
+      <div class="frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span class="url">localhost:3000/inbox</span></div>
+        <img src="img/demo.gif" width="960" height="600" alt="Animated walkthrough of the real app: opening a ticket, generating an AI reply draft, then opening the extracted issue on the Issues board." style="width:100%">
+      </div>
+      <p class="caption">The real app, recorded headless with invented demo data. Drafts are generated on request; nothing is sent until you press Send.</p>
+    </div>
+  </div>
+
+  <section id="drafts">
+    <div class="wrap split">
+      <div class="copy reveal">
+        <div class="kicker">Answer the customer</div>
+        <h2>A reply draft for every thread, in your voice.</h2>
+        <p class="sub">Open a ticket, press AI Draft, and optionally tell it what you want. The draft reads the whole thread, then lands in the reply box for you to edit.</p>
+        <ul class="points">
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Custom instructions.</b> "Make it shorter", "offer a refund", "ask for request IDs".</span></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>One-click summary</b> pinned above the thread, so you can triage without reading every message.</span></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Two mailboxes.</b> Reply from the right address, with a founder sign-off when you reply as yourself.</span></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Queues:</b> Open, Pending, On Hold, Solved and Spam.</span></li>
+        </ul>
+      </div>
+      <div class="frame tilt reveal">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <img src="img/ticket-draft.png" width="1800" height="1125" loading="lazy" alt="A ticket about a CSV export with an AI summary, a detected issue banner, and an AI reply draft in the composer.">
+      </div>
+    </div>
+  </section>
+
+  <section id="issues" class="alt">
+    <div class="wrap">
+      <div class="reveal" style="max-width:680px">
+        <div class="kicker">Fix the product</div>
+        <h2>Real bugs become issue cards a coding agent can act on.</h2>
+        <p class="sub">Press Extract on a thread that describes a real problem. You get a card with a title, a full problem summary, why it matters, and a detailed fix prompt. Drag it across the board, and push it to GitHub with one click.</p>
+      </div>
+      <div class="cards">
+        <div class="cardshot tilt reveal"><img src="img/issue-card.png" width="516" height="1294" loading="lazy" alt="An expanded issue card with Why it matters, Suggested fix, a linked ticket and a View on GitHub button."></div>
+        <div class="reveal">
+          <div class="frame tilt"><div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+            <img src="img/issues.png" width="1800" height="1125" loading="lazy" alt="The Issues board with Backlog, In Progress, Done and Dismissed columns."></div>
+          <ul class="points amber" style="margin-top:28px">
+            <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Routed to the right repo.</b> Describe your backend and frontend once; issues are labelled <code>area:core</code> or <code>area:web</code>.</span></li>
+            <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Status stays in sync.</b> Moving a card to Done or Dismissed closes the GitHub issue.</span></li>
+            <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><b>Optional auto-triage</b> with an included Simili config that moves issues to the right product repo.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="kicker">How it works</div>
+        <h2>Mail in, drafts and issues out. A person clicks every send.</h2>
+      </div>
+      <div class="how reveal"><img src="img/how-it-works.png" width="2000" height="940" loading="lazy" alt="Diagram: your mailboxes sync into Postgres. From there, AI writes a reply draft that you send over SMTP, or an issue card that you open on GitHub."></div>
+    </div>
+  </section>
+
+  <section id="start" class="alt">
+    <div class="wrap qs">
+      <div class="reveal">
+        <div class="kicker">Quick start</div>
+        <h2>Running in five commands.</h2>
+        <p class="sub">You need Node 22+, a Postgres database and an OpenAI API key. The seed adds invented demo tickets so you can look around before connecting a mailbox.</p>
+        <table>
+          <tr><td><code>DATABASE_URL</code></td><td>Postgres for tickets, messages and issues</td></tr>
+          <tr><td><code>AUTH_PASSWORD</code>, <code>AUTH_SECRET</code></td><td>Shared login and cookie signing</td></tr>
+          <tr><td><code>OPENAI_API_KEY</code></td><td>Drafts, summaries and issue extraction</td></tr>
+          <tr><td><code>EMAIL_1_*</code>, <code>EMAIL_2_*</code></td><td>IMAP and SMTP per mailbox</td></tr>
+          <tr><td><code>GH_PAT</code>, <code>GH_REPO</code></td><td>Where issues are created</td></tr>
+        </table>
+      </div>
+      <div class="reveal">
+<pre><button class="copy-btn" type="button" data-copy>Copy</button><span class="p">$ </span>git clone https://github.com/harrythentrepreneur/support-inbox-ai.git
+<span class="p">$ </span>cd support-inbox-ai &amp;&amp; npm install
+<span class="p">$ </span>cp .env.example .env   <span class="c"># fill in the values</span>
+<span class="p">$ </span>npx prisma migrate deploy
+<span class="p">$ </span>npx prisma db seed     <span class="c"># optional demo data</span>
+<span class="p">$ </span>npm run dev            <span class="c"># http://localhost:3000</span></pre>
+        <div class="status">
+          <div><b>Small by design</b>Two mailboxes, one shared password, no multi-tenant auth.</div>
+          <div><b>Drafts, not autopilot</b>AI never sends email or files issues on its own.</div>
+          <div><b>Used for real</b>Ran real support at a small SaaS before it was made generic.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap reveal">
+      <h2>Give your support inbox a second job.</h2>
+      <p class="sub" style="margin:0 auto">Star the repo, run it on your own mail, and send the bugs straight to your backlog.</p>
+      <div class="cta">
+        <a class="btn dark" href="https://github.com/harrythentrepreneur/support-inbox-ai">Get it on GitHub</a>
+        <a class="btn ghost" href="#start">Quick start</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Support Inbox AI · MIT License · Screenshots use invented demo data.</span>
+    <span><a href="https://github.com/harrythentrepreneur/support-inbox-ai">GitHub</a> · <a href="https://github.com/harrythentrepreneur/support-inbox-ai/blob/main/LICENSE">License</a> · Inter font (<a href="fonts/OFL.txt">OFL</a>)</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.05, rootMargin: '0px 0px -5% 0px' });
+  const targets = document.querySelectorAll('.reveal, #stage');
+  targets.forEach(el => reduce ? el.classList.add('in') : io.observe(el));
+  // Safety net: never leave content hidden (print, crawlers, odd scroll containers).
+  setTimeout(() => targets.forEach(el => el.classList.add('in')), 2500);
+
+  if (!reduce && matchMedia('(hover: hover)').matches) {
+    document.querySelectorAll('.tilt').forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        el.style.transform = `perspective(1200px) rotateY(${x * 3}deg) rotateX(${-y * 3}deg) translateY(-2px)`;
+      });
+      el.addEventListener('mouseleave', () => { el.style.transform = ''; });
+    });
+  }
+
+  document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => {
+    const text = b.parentElement.innerText.replace(/^Copy\s*/, '').split('\n').map(l => l.replace(/^\$ /, '').replace(/\s+#.*$/, '')).join('\n');
+    navigator.clipboard.writeText(text).then(() => { b.textContent = 'Copied'; setTimeout(() => b.textContent = 'Copy', 1400); });
+  }));
+})();
+</script>
+</body>
+</html>

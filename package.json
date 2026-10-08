@@ -47,5 +47,8 @@
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3"
+  },
+  "prisma": {
+    "seed": "node --experimental-strip-types prisma/seed.ts"
   }
 }
