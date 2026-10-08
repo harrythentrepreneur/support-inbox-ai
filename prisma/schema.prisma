@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String @id @default(cuid())
+  name         String
+  email        String @unique
+  passwordHash String?
+  workspace_id String
+}
+
+model Workspace {
+  id         String   @id @default(cuid())
+  name       String
+  created_at DateTime @default(now())
+}
+
+model Ticket {
+  id                 String    @id @default(cuid())
+  workspace_id       String
+  subject            String
+  status             String    @default("Open")
+  customer_email     String
+  mailbox            String    @default("") // which email account this came from
+  latest_message_at  DateTime  @default(now())
+  messages           Message[]
+  summary_text       String?
+  issues             Issue[]
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+}
+
+model Message {
+  id          String       @id @default(cuid())
+  ticket_id   String
+  ticket      Ticket       @relation(fields: [ticket_id], references: [id])
+  sender_name String
+  body_text   String
+  direction   String
+  sent_at     DateTime     @default(now())
+  created_at  DateTime     @default(now())
+  attachments Attachment[]
+}
+
+model Attachment {
+  id           String   @id @default(cuid())
+  message_id   String
+  message      Message  @relation(fields: [message_id], references: [id])
+  filename     String
+  content_type String
+  data         Bytes
+  size         Int
+  created_at   DateTime @default(now())
+}
+
+model Issue {
+  id                  String            @id @default(cuid())
+  workspace_id        String
+  ticket_id           String?
+  ticket              Ticket?           @relation(fields: [ticket_id], references: [id])
+  title               String
+  problem_summary     String
+  why_it_matters      String?
+  fix_prompt          String?
+  status              String            @default("Backlog")
+  priority_rank       Int?
+  target_repos        String[]          @default([])
+  github_issue_number Int?
+  github_issue_url    String?
+  github_issues       GithubIssueLink[]
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+}
+
+model GithubIssueLink {
+  id           String   @id @default(cuid())
+  issue_id     String
+  issue        Issue    @relation(fields: [issue_id], references: [id])
+  repo_name    String
+  repo_full    String   @default("")
+  issue_number Int
+  issue_url    String
+  created_at   DateTime @default(now())
+}
+
+model WaitlistEntry {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  created_at DateTime @default(now())
+}

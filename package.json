@@ -1,0 +1,51 @@
+{
+  "name": "support-inbox-ai",
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.2",
+    "clsx": "^2.1.1",
+    "imapflow": "^1.2.16",
+    "lucide-react": "^1.6.0",
+    "mailparser": "^3.9.5",
+    "next": "16.2.1",
+    "nodemailer": "^8.0.3",
+    "openai": "^6.32.0",
+    "prisma": "^6.19.2",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^3.5.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "sharp",
+      "unrs-resolver"
+    ],
+    "overrides": {
+      "effect": ">=3.20.0"
+    }
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/mailparser": "^3.4.6",
+    "@types/node": "^25.5.0",
+    "@types/nodemailer": "^7.0.11",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.2.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.9.3"
+  }
+}

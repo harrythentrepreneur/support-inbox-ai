@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-hover: #f3f4f6;
+  --bg-active: #eef0f3;
+
+  /* Text */
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+
+  /* Borders */
+  --border-light: #f0f0f0;
+  --border-default: #e5e7eb;
+  --border-strong: #d1d5db;
+
+  /* Accent — soft neutral-blue */
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --accent-subtle: #dbeafe;
+
+  /* Status */
+  --status-open: #ef4444;
+  --status-pending: #f59e0b;
+  --status-onhold: #6366f1;
+  --status-solved: #10b981;
+  --status-spam: #9ca3af;
+
+  --font-sans: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius: 8px;
+  --transition: 150ms ease;
+}
+
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-inter);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 100px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent-subtle);
+}
+
+/* Animations — subtle only */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 150ms ease forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 120ms ease forwards;
+}
+
+/* Status dots */
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot-open {
+  background: var(--status-open);
+}
+
+.status-dot-pending {
+  background: var(--status-pending);
+}
+
+.status-dot-onhold {
+  background: var(--status-onhold);
+}
+
+.status-dot-solved {
+  background: var(--status-solved);
+}
+
+.status-dot-spam {
+  background: var(--status-spam);
+}
+
+/* Drag states */
+.drag-over {
+  background: var(--accent-light) !important;
+  border-color: var(--accent) !important;
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+/* Mobile — tap feedback & safe areas */
+@media (max-width: 767px) {
+
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Sidebar drawer animation */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 200ms ease-out forwards;
+}

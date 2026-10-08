@@ -1,0 +1,36 @@
+name: Simili Issue Triage
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: simili-${{ github.event.issue.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    # Skip bot comments to prevent feedback loops
+    if: >
+      github.event_name != 'issue_comment' ||
+      (github.actor != 'github-actions[bot]' && github.actor != 'gh-simili-bot' && github.actor != 'claude[bot]')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Simili Bot
+        uses: similigh/simili-bot@main
+        with:
+          config_path: .github/simili.yaml
+          command: process
+          github_token: ${{ secrets.SIMILI_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          transfer_token: ${{ secrets.TRANSFER_TOKEN }}
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

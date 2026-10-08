@@ -1,0 +1,111 @@
+# Simili-Bot Configuration for SoftwareSupport
+# Central config — core and web repos extend from this via `extends:`
+#
+# This repo acts as the "intake" for customer-reported issues.
+# Simili triages and transfers issues to the correct product repo.
+#
+# NOTE: Qdrant/embedding is disabled — using rule-based transfer only.
+# To enable similarity search later, add qdrant + embedding sections.
+
+llm:
+  provider: "gemini"
+  api_key: "${GEMINI_API_KEY}"
+  model: "gemini-2.5-flash"
+
+defaults:
+  similarity_threshold: 0.70
+  max_similar_to_show: 5
+
+# ── Repositories known to the LLM router ──────────────────────────────
+# Each description helps the LLM decide where an issue belongs.
+repositories:
+  - org: "your-org"
+    repo: "softwaresupport"
+    description: >
+      Customer support CRM and internal dashboard (Next.js + Prisma + PostgreSQL).
+      Only for issues with the support inbox, email sync, ticket management,
+      or the CRM UI itself. NOT for product issues.
+    enabled: true
+
+  - org: "your-org"
+    repo: "core"
+    description: >
+      Python FastAPI backend that powers the product.
+      Handles: worksheet/story generation pipeline (multi-agent AI: planning,
+      generation, QA, images), image generation via Runware API, PDF generation
+      via WeasyPrint, PPTX export, curriculum system with Qdrant RAG,
+      Modal serverless deployment, Celery task queue with Redis.
+      Issues about: generation failures, wrong images, PDF layout bugs,
+      API errors, backend performance, slow generation, image quality,
+      story content problems, curriculum accuracy, backend crashes.
+    enabled: true
+
+  - org: "your-org"
+    repo: "web"
+    description: >
+      Next.js frontend for the product (Cloudflare deployment).
+      Handles: user dashboard, worksheet editor and preview, book collections UI,
+      billing/subscriptions via Stripe, user authentication, announcement bar,
+      Drizzle ORM with NeonDB, Sentry error tracking.
+      Issues about: UI bugs, page not loading, display errors, broken buttons,
+      checkout/payment failures, login problems, layout issues, missing content
+      on screen, slow page loads, mobile responsiveness, user flow confusion.
+    enabled: true
+
+# ── Transfer / Routing ─────────────────────────────────────────────────
+transfer:
+  enabled: true
+  llm_routing_enabled: true
+  medium_confidence: 0.60
+  high_confidence: 0.85
+
+  # Rule-based transfer (evaluated first, highest priority wins)
+  rules:
+    # Label-based rules — highest priority
+    - name: "core-label"
+      priority: 100
+      target: "your-org/core"
+      labels_any: ["area:core", "backend", "generation"]
+
+    - name: "web-label"
+      priority: 100
+      target: "your-org/web"
+      labels_any: ["area:web", "frontend", "ui"]
+
+    # Keyword-based rules — fallback
+    - name: "core-keywords"
+      priority: 50
+      target: "your-org/core"
+      title_contains:
+        - "generation failed"
+        - "PDF"
+        - "image generation"
+        - "worksheet generation"
+        - "API error"
+        - "Modal"
+        - "Runware"
+        - "backend"
+        - "story generation"
+        - "celery"
+        - "task failed"
+        - "book generation"
+
+    - name: "web-keywords"
+      priority: 50
+      target: "your-org/web"
+      title_contains:
+        - "dashboard"
+        - "login"
+        - "billing"
+        - "checkout"
+        - "page load"
+        - "display"
+        - "frontend"
+        - "button"
+        - "layout"
+        - "UI"
+        - "Stripe"
+        - "payment"
+        - "subscription"
+        - "sign up"
+        - "sign in"
